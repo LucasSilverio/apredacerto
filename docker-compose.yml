@@ -1,0 +1,47 @@
+services:
+  app3:
+    build:
+      args:
+        user: lucas
+        uid: 1000
+      context: ./
+      dockerfile: Dockerfile
+    image: lucazsilverio/app-php-core
+    working_dir: /var/www
+    volumes:
+      - ./:/var/www
+    restart: unless-stopped
+    networks:
+      - app-php-core
+  
+  #nginx
+  nginx:
+    image: nginx:alpine
+    restart: always
+    ports:
+      - 8383:80
+    volumes:
+      - ./:/var/www
+      - ./docker/nginx/:/etc/nginx/conf.d/
+    networks:
+      - app-php-core
+
+  #mysql
+  mysql:
+    image: mysql:5.7.22
+    restart: unless-stopped
+    ports:
+      - 3375:3306
+    volumes:
+      - ./.docker/mysql:/var/lib/mysql
+    environment:
+      MYSQL_DATABASE: app-php-core
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: root
+      MYSQL_PASSWORD: root
+    networks:
+      - app-php-core
+
+networks:
+  app-php-core:
+    driver: bridge
