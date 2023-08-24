@@ -1,4 +1,4 @@
-# apredacerto
+# ApredaCerto
 ## Rodando localmente
 
 Clone o projeto
